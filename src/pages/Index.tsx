@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import Hls from "hls.js";
 import Icon from "@/components/ui/icon";
 
 const GEROYCHIKI_EPISODES_S1 = [
@@ -41,17 +42,18 @@ const GEROYCHIKI_URLS_S1 = [
 ];
 
 const TV_CHANNELS = [
-  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", url: "https://smotrim.ru/live/3" },
-  { name: "НТВ", emoji: "🎬", color: "from-green-600 to-green-800", url: "https://www.ntv.ru/peredacha/onlinetv/" },
-  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", url: "https://smotrim.ru/live/5" },
-  { name: "Пятый канал", emoji: "5️⃣", color: "from-yellow-500 to-orange-600", url: "https://www.5-tv.ru/online/" },
-  { name: "РЕН ТВ", emoji: "🔥", color: "from-red-600 to-rose-800", url: "https://ren.tv/live" },
-  { name: "СТС", emoji: "✨", color: "from-pink-500 to-purple-700", url: "https://ctc.ru/online/" },
-  { name: "ТНТ", emoji: "😂", color: "from-yellow-400 to-yellow-600", url: "https://www.tnt-online.ru/stream/" },
-  { name: "Матч ТВ", emoji: "⚽", color: "from-orange-500 to-red-600", url: "https://matchtv.ru/on-air" },
-  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", url: "https://smotrim.ru/live/19" },
-  { name: "ОТР", emoji: "🌍", color: "from-teal-500 to-emerald-700", url: "https://otr-online.ru/programms/otr-online.html" },
-  { name: "ТВК", emoji: "📻", color: "from-slate-500 to-slate-700", url: "https://tvk6.ru/live" },
+  { name: "Первый канал", emoji: "1️⃣", color: "from-blue-700 to-blue-900", stream: "http://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R03_OTT_VLG_NN_1TV/variant.m3u8?version=2" },
+  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/elista/russia1-sd/index.m3u8" },
+  { name: "НТВ", emoji: "🎬", color: "from-green-600 to-green-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_NTV/variant.m3u8" },
+  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/bryansk/russia24-sd/index.m3u8" },
+  { name: "Пятый канал", emoji: "5️⃣", color: "from-yellow-500 to-orange-600", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_5TV/variant.m3u8" },
+  { name: "РЕН ТВ", emoji: "🔥", color: "from-red-600 to-rose-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8" },
+  { name: "СТС", emoji: "✨", color: "from-pink-500 to-purple-700", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8" },
+  { name: "ТНТ", emoji: "😂", color: "from-yellow-400 to-yellow-600", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8" },
+  { name: "Матч ТВ", emoji: "⚽", color: "from-orange-500 to-red-600", stream: "" },
+  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8" },
+  { name: "ОТР", emoji: "🌍", color: "from-teal-500 to-emerald-700", stream: "" },
+  { name: "ТВК", emoji: "📻", color: "from-slate-500 to-slate-700", stream: "" },
 ];
 
 const SERIES_LIST = [
@@ -95,6 +97,7 @@ export default function Index() {
   const [playingEp, setPlayingEp] = useState<{ title: string; url: string } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [playingChannel, setPlayingChannel] = useState<typeof TV_CHANNELS[0] | null>(null);
 
   useEffect(() => {
     localStorage.setItem("poehali_fav", JSON.stringify(favorites));
@@ -395,7 +398,7 @@ export default function Index() {
                 </div>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                   {TV_CHANNELS.slice(0, 6).map((ch, i) => (
-                    <ChannelCard key={ch.name} channel={ch} index={i} />
+                    <ChannelCard key={ch.name} channel={ch} index={i} onPlay={() => { setSection("tv"); setPlayingChannel(ch); }} />
                   ))}
                 </div>
               </div>
@@ -435,15 +438,44 @@ export default function Index() {
         {/* TV */}
         {section === "tv" && (
           <div className="max-w-7xl mx-auto px-4 py-10 animate-fadeIn">
-            <div className="mb-8">
-              <h1 className="font-montserrat font-black text-3xl md:text-4xl text-white mb-2">ТВ-каналы</h1>
-              <p className="text-white/40 text-sm">Федеральные каналы в прямом эфире</p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {TV_CHANNELS.map((ch, i) => (
-                <ChannelCard key={ch.name} channel={ch} index={i} large />
-              ))}
-            </div>
+            {playingChannel ? (
+              <div className="animate-fadeInUp">
+                <button
+                  onClick={() => setPlayingChannel(null)}
+                  className="flex items-center gap-2 text-white/50 hover:text-white mb-6 transition-colors text-sm"
+                >
+                  <Icon name="ArrowLeft" size={16} />
+                  Все каналы
+                </button>
+                <div className="rounded-2xl overflow-hidden glass border border-white/10">
+                  <div className="flex items-center gap-3 px-5 py-4 border-b border-white/10">
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${playingChannel.color} flex items-center justify-center text-xl`}>
+                      {playingChannel.emoji}
+                    </div>
+                    <div>
+                      <h2 className="font-montserrat font-bold text-white">{playingChannel.name}</h2>
+                      <div className="flex items-center gap-1.5 text-xs text-green-400">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                        Прямой эфир
+                      </div>
+                    </div>
+                  </div>
+                  <HlsPlayer streamUrl={playingChannel.stream} channelName={playingChannel.name} />
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="mb-8">
+                  <h1 className="font-montserrat font-black text-3xl md:text-4xl text-white mb-2">ТВ-каналы</h1>
+                  <p className="text-white/40 text-sm">Нажми на канал, чтобы смотреть прямой эфир</p>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {TV_CHANNELS.map((ch, i) => (
+                    <ChannelCard key={ch.name} channel={ch} index={i} large onPlay={() => setPlayingChannel(ch)} />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -548,17 +580,18 @@ function SeriesCard({
   );
 }
 
-function ChannelCard({ channel, index, large = false }: {
+function ChannelCard({ channel, index, large = false, onPlay }: {
   channel: typeof TV_CHANNELS[0];
   index: number;
   large?: boolean;
+  onPlay?: () => void;
 }) {
+  const hasStream = !!channel.stream;
   return (
-    <a
-      href={channel.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`group channel-card flex flex-col items-center justify-center rounded-2xl glass border border-white/5 hover:border-orange-500/30 transition-all card-hover animate-fadeInUp ${large ? "p-6 gap-3" : "p-4 gap-2"}`}
+    <button
+      onClick={onPlay}
+      disabled={!hasStream}
+      className={`group channel-card flex flex-col items-center justify-center rounded-2xl glass border border-white/5 hover:border-orange-500/30 transition-all card-hover animate-fadeInUp w-full ${large ? "p-6 gap-3" : "p-4 gap-2"} ${!hasStream ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
       style={{ animationDelay: `${index * 0.06}s`, animationFillMode: "forwards", opacity: 0 }}
     >
       <div className={`${large ? "w-14 h-14 text-3xl" : "w-10 h-10 text-2xl"} rounded-xl bg-gradient-to-br ${channel.color} flex items-center justify-center`}>
@@ -568,9 +601,72 @@ function ChannelCard({ channel, index, large = false }: {
         {channel.name}
       </span>
       <span className="flex items-center gap-1 text-xs text-green-400">
-        <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-        {large ? "В эфире" : ""}
+        <span className={`w-1.5 h-1.5 rounded-full ${hasStream ? "bg-green-400" : "bg-white/20"}`} />
+        {large ? (hasStream ? "Смотреть" : "Скоро") : ""}
       </span>
-    </a>
+    </button>
+  );
+}
+
+function HlsPlayer({ streamUrl, channelName }: { streamUrl: string; channelName: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !streamUrl) return;
+    setError(false);
+    setLoading(true);
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({ enableWorker: false });
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        setLoading(false);
+        video.play().catch(() => {});
+      });
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (data.fatal) { setError(true); setLoading(false); }
+      });
+      return () => hls.destroy();
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = streamUrl;
+      video.addEventListener("loadedmetadata", () => { setLoading(false); video.play().catch(() => {}); });
+      video.addEventListener("error", () => { setError(true); setLoading(false); });
+    }
+  }, [streamUrl]);
+
+  if (error) {
+    return (
+      <div className="aspect-video bg-black flex items-center justify-center">
+        <div className="text-center px-6">
+          <Icon name="WifiOff" size={36} className="text-white/20 mx-auto mb-3" />
+          <p className="text-white/40 text-sm">Трансляция временно недоступна</p>
+          <p className="text-white/20 text-xs mt-1">{channelName}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative aspect-video bg-black">
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-10 h-10 rounded-full border-2 border-orange-500/30 border-t-orange-500 animate-spin" />
+            <p className="text-white/40 text-xs font-montserrat">Загружаем эфир...</p>
+          </div>
+        </div>
+      )}
+      <video
+        ref={videoRef}
+        className="w-full h-full"
+        controls
+        playsInline
+        muted
+      />
+    </div>
   );
 }
