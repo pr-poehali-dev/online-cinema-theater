@@ -43,15 +43,15 @@ const GEROYCHIKI_URLS_S1 = [
 
 const TV_CHANNELS = [
   { name: "Первый канал", emoji: "1️⃣", color: "from-blue-700 to-blue-900", stream: "http://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R03_OTT_VLG_NN_1TV/variant.m3u8?version=2" },
-  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", stream: "https://streaming.televizor-24-tochka.ru/live/8.m3u8" },
+  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", stream: "", embedUrl: "https://player.smotrim.ru/iframe/stream/live_id/2961" },
   { name: "НТВ", emoji: "🎬", color: "from-green-600 to-green-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_NTV/variant.m3u8" },
-  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia24-hd/720p.m3u8" },
+  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", stream: "", embedUrl: "https://player.smotrim.ru/iframe/stream/live_id/21" },
   { name: "Пятый канал", emoji: "5️⃣", color: "from-yellow-500 to-orange-600", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_5TV/variant.m3u8" },
   { name: "РЕН ТВ", emoji: "🔥", color: "from-red-600 to-rose-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8" },
   { name: "СТС", emoji: "✨", color: "from-pink-500 to-purple-700", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8" },
   { name: "ТНТ", emoji: "😂", color: "from-yellow-400 to-yellow-600", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8" },
   { name: "Матч ТВ", emoji: "⚽", color: "from-orange-500 to-red-600", stream: "" },
-  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", stream: "http://cdnmg.secure.live.rtr-vesti.ru/hls/russia_k/playlist_3.m3u8" },
+  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", stream: "", embedUrl: "https://player.smotrim.ru/iframe/stream/live_id/19201" },
   { name: "ОТР", emoji: "🌍", color: "from-teal-500 to-emerald-700", stream: "" },
   { name: "ТВК", emoji: "📻", color: "from-slate-500 to-slate-700", stream: "" },
 ];
@@ -460,7 +460,7 @@ export default function Index() {
                       </div>
                     </div>
                   </div>
-                  <HlsPlayer streamUrl={playingChannel.stream} channelName={playingChannel.name} />
+                  <HlsPlayer streamUrl={playingChannel.stream} channelName={playingChannel.name} embedUrl={(playingChannel as typeof TV_CHANNELS[0] & { embedUrl?: string }).embedUrl} />
                 </div>
               </div>
             ) : (
@@ -608,10 +608,12 @@ function ChannelCard({ channel, index, large = false, onPlay }: {
   );
 }
 
-function HlsPlayer({ streamUrl, channelName }: { streamUrl: string; channelName: string }) {
+function HlsPlayer({ streamUrl, channelName, embedUrl }: { streamUrl: string; channelName: string; embedUrl?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+
+
 
   useEffect(() => {
     const video = videoRef.current;
@@ -646,6 +648,20 @@ function HlsPlayer({ streamUrl, channelName }: { streamUrl: string; channelName:
           <p className="text-white/40 text-sm">Трансляция временно недоступна</p>
           <p className="text-white/20 text-xs mt-1">{channelName}</p>
         </div>
+      </div>
+    );
+  }
+
+  if (embedUrl) {
+    return (
+      <div className="relative aspect-video bg-black">
+        <iframe
+          src={embedUrl}
+          className="w-full h-full"
+          allowFullScreen
+          allow="autoplay; fullscreen"
+          frameBorder="0"
+        />
       </div>
     );
   }
