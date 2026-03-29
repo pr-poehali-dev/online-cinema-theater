@@ -43,15 +43,15 @@ const GEROYCHIKI_URLS_S1 = [
 
 const TV_CHANNELS = [
   { name: "Первый канал", emoji: "1️⃣", color: "from-blue-700 to-blue-900", stream: "http://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R03_OTT_VLG_NN_1TV/variant.m3u8?version=2" },
-  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/elista/russia1-sd/index.m3u8" },
+  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", stream: "https://streaming.televizor-24-tochka.ru/live/8.m3u8" },
   { name: "НТВ", emoji: "🎬", color: "from-green-600 to-green-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_NTV/variant.m3u8" },
-  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/bryansk/russia24-sd/index.m3u8" },
+  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/russia24-hd/720p.m3u8" },
   { name: "Пятый канал", emoji: "5️⃣", color: "from-yellow-500 to-orange-600", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_5TV/variant.m3u8" },
   { name: "РЕН ТВ", emoji: "🔥", color: "from-red-600 to-rose-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8" },
   { name: "СТС", emoji: "✨", color: "from-pink-500 to-purple-700", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8" },
   { name: "ТНТ", emoji: "😂", color: "from-yellow-400 to-yellow-600", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8" },
   { name: "Матч ТВ", emoji: "⚽", color: "from-orange-500 to-red-600", stream: "" },
-  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8" },
+  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", stream: "http://cdnmg.secure.live.rtr-vesti.ru/hls/russia_k/playlist_3.m3u8" },
   { name: "ОТР", emoji: "🌍", color: "from-teal-500 to-emerald-700", stream: "" },
   { name: "ТВК", emoji: "📻", color: "from-slate-500 to-slate-700", stream: "" },
 ];
