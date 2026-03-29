@@ -43,16 +43,16 @@ const GEROYCHIKI_URLS_S1 = [
 
 const TV_CHANNELS = [
   { name: "Первый канал", emoji: "1️⃣", color: "from-blue-700 to-blue-900", stream: "http://rt-vlg-nn-htlive.cdn.ngenix.net/hls/CH_R03_OTT_VLG_NN_1TV/variant.m3u8?version=2" },
-  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", stream: "", embedUrl: "https://player.smotrim.ru/iframe/stream/live_id/2961" },
+  { name: "Россия 1", emoji: "📺", color: "from-blue-600 to-blue-800", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/elista/russia1-sd/index.m3u8" },
   { name: "НТВ", emoji: "🎬", color: "from-green-600 to-green-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_NTV/variant.m3u8" },
-  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", stream: "", embedUrl: "https://player.smotrim.ru/iframe/stream/live_id/21" },
+  { name: "Россия 24", emoji: "📡", color: "from-blue-500 to-cyan-700", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/bryansk/russia24-sd/index.m3u8" },
   { name: "Пятый канал", emoji: "5️⃣", color: "from-yellow-500 to-orange-600", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_5TV/variant.m3u8" },
   { name: "РЕН ТВ", emoji: "🔥", color: "from-red-600 to-rose-800", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_RENTV/variant.m3u8" },
   { name: "СТС", emoji: "✨", color: "from-pink-500 to-purple-700", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_STS/variant.m3u8" },
   { name: "ТНТ", emoji: "😂", color: "from-yellow-400 to-yellow-600", stream: "https://streaming.televizor-24-tochka.ru/live/38.m3u8" },
   { name: "Матч ТВ", emoji: "⚽", color: "from-orange-500 to-red-600", stream: "" },
-  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", stream: "", embedUrl: "https://player.smotrim.ru/iframe/stream/live_id/19201" },
-  { name: "ОТР", emoji: "🌍", color: "from-teal-500 to-emerald-700", stream: "" },
+  { name: "Культура", emoji: "🎭", color: "from-indigo-600 to-violet-800", stream: "https://vgtrkregion-reg.cdnvideo.ru/vgtrk/0/kultura-hd/index.m3u8" },
+  { name: "ОТР", emoji: "🌍", color: "from-teal-500 to-emerald-700", stream: "https://zabava-htlive.cdn.ngenix.net/hls/CH_OTR/variant.m3u8" },
   { name: "ТВК", emoji: "📻", color: "from-slate-500 to-slate-700", stream: "" },
 ];
 
@@ -210,22 +210,14 @@ export default function Index() {
                   <Icon name="X" size={20} />
                 </button>
               </div>
-              <div className="aspect-video bg-black flex items-center justify-center">
-                <div className="text-center px-6">
-                  <div className="w-16 h-16 rounded-full bg-orange-500/20 flex items-center justify-center mx-auto mb-4">
-                    <Icon name="PlayCircle" size={32} className="text-orange-400" />
-                  </div>
-                  <p className="text-white/50 text-sm mb-4">Нажми кнопку, чтобы открыть серию во VK Video</p>
-                  <a
-                    href={playingEp.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-pink-600 text-white font-montserrat font-semibold text-sm hover:opacity-90 transition-opacity"
-                  >
-                    <Icon name="Play" size={16} />
-                    Смотреть серию
-                  </a>
-                </div>
+              <div className="aspect-video bg-black">
+                <iframe
+                  src={playingEp.url}
+                  className="w-full h-full"
+                  allowFullScreen
+                  allow="autoplay; fullscreen; encrypted-media"
+                  frameBorder="0"
+                />
               </div>
             </div>
           </div>
