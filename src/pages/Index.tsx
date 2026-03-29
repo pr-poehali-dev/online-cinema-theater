@@ -586,7 +586,7 @@ function ChannelCard({ channel, index, large = false, onPlay }: {
   large?: boolean;
   onPlay?: () => void;
 }) {
-  const hasStream = !!channel.stream;
+  const hasStream = !!channel.stream || !!(channel as typeof channel & { embedUrl?: string }).embedUrl;
   return (
     <button
       onClick={onPlay}
